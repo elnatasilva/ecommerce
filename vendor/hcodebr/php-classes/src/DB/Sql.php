@@ -42,7 +42,7 @@ class Sql {
 
 	public function query($rawQuery, $params = array())
 	{
-
+		echo "Entrou no query com o comando " . $rawQuery;
 		$stmt = $this->conn->prepare($rawQuery);
 
 		$this->setParams($stmt, $params);

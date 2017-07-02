@@ -241,13 +241,51 @@ class User extends Model
 
 		if (count($dataRec) === 0)
 		{
-			throw new \Exception("Não foi possível recuperar a senha, code = $code, codigo $idrecovery");
+			throw new \Exception("Não foi possível recuperar a senha");
 			
 		}
 
-		return $dataRec;
+		return $dataRec[0];
 
 
+	}
+
+	//usada quando o usuário reseta a senha.
+	//só funciona no contexto de recuperação de senha
+	//em que o usuário recebe um idrecovery para resetar
+	//a senha
+	private function setUsedRecoveryCode()
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE iduser = :iduser AND idrecovery = :idrecovery" , array(
+				":iduser"=>$this->getiduser(),
+				":idrecovery"=>$this->getidrecovery()
+			));
+
+
+	} 
+
+
+	public function resetPassword($password)
+	{
+		$status = false;		
+
+		$this->setUsedRecoveryCode();
+
+		$sql = new Sql();
+
+		$hash = password_hash($password, PASSWORD_DEFAULT, array("cost"=>12));
+
+		$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser" , array(
+				":password"=>$hash,
+				":iduser"=>$this->getiduser()
+			));
+		
+		$status = true;
+
+		return $status;
 	}
 }
 

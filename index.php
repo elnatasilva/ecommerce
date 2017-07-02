@@ -208,13 +208,35 @@ $app->get("/admin/forgot/sent", function(){
 
 });
 
+
+$app->post("/admin/forgot/reset", function(){
+
+	$dataRec = User::verifyRecoveryCode($_POST["code"]);
+
+	$user = new User();
+
+	$user->setData($dataRec);
+
+	if (!$user->resetPassword($_POST["password"]))
+		throw new \Exception("Não foi possível redefinir a senha");
+		 
+	$page = new PageAdmin(array(
+			"header"=>false,
+			"footer"=>false
+
+		));
+
+	$page->setTpl("forgot-reset-success");
+
+	exit;
+	
+});
+
+
+
 $app->get("/admin/forgot/reset/:idrecovery", function($idrecovery){
 
 	$dataRec = User::verifyRecoveryCode($idrecovery);
-
-	var_dump($dataRec);
-
-	exit;
 
 	$page = new PageAdmin(array(
 			"header"=>false,
@@ -229,7 +251,11 @@ $app->get("/admin/forgot/reset/:idrecovery", function($idrecovery){
 
 
 	exit;
+
 });
+
+
+
 
 
 $app->run();

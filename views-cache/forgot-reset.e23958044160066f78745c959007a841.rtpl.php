@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -29,7 +29,7 @@
     <a href="/res/admin/index2.html"><b>Admin</b>LTE</a>
   </div>
   <!-- User name -->
-  <div class="lockscreen-name">{$name} - Alteração de Senha</div>
+  <div class="lockscreen-name"><?php echo htmlspecialchars( $name, ENT_COMPAT, 'UTF-8', FALSE ); ?> - Alteração de Senha</div>
 
   <!-- START LOCK SCREEN ITEM -->
   <div class="lockscreen-item">
@@ -41,7 +41,7 @@
       <div class="form-group">
         <input type="password" class="form-control" placeholder="Digite uma nova senha" name="password">
 
-        <input type="hidden" name="code" value="{$code}">
+        <input type="hidden" name="code" value="<?php echo htmlspecialchars( $code, ENT_COMPAT, 'UTF-8', FALSE ); ?>">
 
         
         <button style="z-index: 30; height: 100%;" type="submit" class="btn btn-success" ><i class="fa fa-arrow-right "></i></button>

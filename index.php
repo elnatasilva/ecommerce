@@ -5,6 +5,8 @@ require_once("vendor/autoload.php");
 use \Slim\Slim;
 use \Hcode\Page;
 use \Hcode\PageAdmin;
+use \Hcode\PageError;
+use \Hcode\Util;
 use \Hcode\Model\User;
 
 
@@ -12,6 +14,8 @@ $app = new \Slim\Slim();
 
 $app->config('debug', true);
 
+
+//rota da homepage
 $app->get('/', function() {
     
 	$page = new Page();
@@ -20,6 +24,8 @@ $app->get('/', function() {
 
 });
 
+
+//acesso ao menu administrativo
 $app->get('/admin', function() {
 
     User::verifyLogin();
@@ -30,9 +36,14 @@ $app->get('/admin', function() {
 
 });
 
+
+//login ao menu administrativo
 $app->get('/admin/login', function() {
 
-    
+    //o template tem seu próprio header
+    //e footer, por isso é necessário
+    //desabitiltar a chamada aos templates
+    //do construtor da classe PageAdmin
 	$page = new PageAdmin(array(
 			"header"=>false,
 			"footer"=>false
@@ -43,13 +54,29 @@ $app->get('/admin/login', function() {
 
 });
 
+//rota de processamento do login
 $app->post('/admin/login', function() {
 
-    User::login($_POST["login"], $_POST["password"]);
-	
-	header("Location: /admin");
+	try
+	{
 
-	exit;
+	    User::login($_POST["login"], $_POST["password"]);
+		
+		header("Location: /admin");
+
+	}catch (Exception $e)
+	{
+
+		//classe utilitária que mostra uma mensagem de erro 
+		//formatada
+		Util::errorPage($e);
+
+	}finally
+	{
+		exit;
+	}
+
+	
 
 });
 
@@ -93,35 +120,57 @@ $app->get('/admin/users/create', function(){
 
 $app->post('/admin/users/create', function(){
 
-	User::verifyLogin();
+	try
+	{
 
-	$_POST["inadmin"] = (isset($_POST["inadmin"])?1:0);
+		User::verifyLogin();
 
-	$user = new User();
+		$_POST["inadmin"] = (isset($_POST["inadmin"])?1:0);
 
-	$user->setData($_POST);
+		$user = new User();
 
-	$user->save();
+		$user->setData($_POST);
 
-	header("Location: /admin/users");
+		$user->save();
 
-	exit;
+		header("Location: /admin/users");
+
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
+
+	}finally
+	{
+
+		exit;
+
+	}
 	
 });
 
 $app->get('/admin/users/:iduser/delete', function($iduser){
 
-	User::verifyLogin();	
+	try
+	{
+		User::verifyLogin();	
 
-	$user = new User();
+		$user = new User();
 
-	$user->get($iduser);
+		$user->get($iduser);
 
-	$user->delete();
+		$user->delete();
 
-	header("Location: /admin/users");
+		header("Location: /admin/users");
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
 
-	exit;
+	}finally
+	{
+
+		exit;
+
+	}
 
 });
 
@@ -147,19 +196,29 @@ $app->get('/admin/users/:iduser', function($iduser){
 
 $app->post('/admin/users/:iduser', function($iduser){
 
-	User::verifyLogin();	
+	try
+	{
+		User::verifyLogin();	
 
-	$user = new User();
+		$user = new User();
 
-	$user->get($iduser);
+		$user->get($iduser);
 
-	$user->setData($_POST);
+		$user->setData($_POST);
 
-	$user->saveUpdate();
+		$user->saveUpdate();
 
-	header("Location: /admin/users");
+		header("Location: /admin/users");
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
 
-	exit;	
+	}finally
+	{
+
+		exit;
+
+	}
 
 
 });
@@ -183,13 +242,23 @@ $app->get("/admin/forgot", function(){
 
 $app->post("/admin/forgot", function(){
 
-	$email = $_POST['email'];
+	try
+	{
+		$email = $_POST['email'];
 
-	$data = User::generateRecoveryCode($email);
-	
-	header("Location: /admin/forgot/sent");
+		$data = User::generateRecoveryCode($email);
+		
+		header("Location: /admin/forgot/sent");
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
 
-	exit;
+	}finally
+	{
+
+		exit;
+
+	}
 
 });
 

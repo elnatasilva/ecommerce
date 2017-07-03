@@ -193,10 +193,10 @@ class User extends Model
 				$datarecovery = $results2[0];
 
 				//criptografa o codigo de recuperacao e transforma em string base64
-				$link = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SENHA, $datarecovery["idrecovery"], MCRYPT_MODE_ECB));
+				$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SENHA, $datarecovery["idrecovery"], MCRYPT_MODE_ECB));
 
 
-				$link = "http://www.hcodecommerce.com.br/admin/forgot/reset/" . $link;
+				$link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
 
 				//configura a classe de envio de email
 				$mailer = new Mailer($data["desemail"], 

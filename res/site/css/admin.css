@@ -1,0 +1,12 @@
+.form-interno{
+	padding: 0;
+}
+
+.form-interno .form-control{
+	width: 130%;
+}
+
+.form-interno button{
+	position: relative;
+    right: -50px;
+}

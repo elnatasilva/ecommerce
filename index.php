@@ -234,9 +234,9 @@ $app->post("/admin/forgot/reset", function(){
 
 
 
-$app->get("/admin/forgot/reset/:idrecovery", function($idrecovery){
+$app->get("/admin/forgot/reset", function(){
 
-	$dataRec = User::verifyRecoveryCode($idrecovery);
+	$dataRec = User::verifyRecoveryCode($_GET["code"]);
 
 	$page = new PageAdmin(array(
 			"header"=>false,
@@ -246,7 +246,7 @@ $app->get("/admin/forgot/reset/:idrecovery", function($idrecovery){
 
 	$page->setTpl("forgot-reset", array(
 			"name"=>$dataRec["desperson"],
-			"code"=>$idrecovery
+			"code"=>$_GET["code"]
 		));
 
 

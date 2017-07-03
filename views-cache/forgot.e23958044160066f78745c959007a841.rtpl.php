@@ -15,6 +15,8 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/res/admin/dist/css/AdminLTE.css">
 
+  <link rel="stylesheet" href="/res/site/css/admin.css">
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -22,33 +24,38 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body class="hold-transition lockscreen">
+<body class=" lockscreen">
 <!-- Automatic element centering -->
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
-    <a href="/res/admin/index2.html"><b>Admin</b>LTE</a>
+    <a href="/res/admin/index2.html"><b>HCode</b>Store</a>
   </div>
   <!-- User name -->
   <div class="lockscreen-name">Recuperação de Senha</div>
+  <br>
 
   <!-- START LOCK SCREEN ITEM -->
-  <div class="lockscreen-item">
+  
  
-    <!-- /.lockscreen-image -->
+    <div class="">
 
     <!-- lockscreen credentials (contains the form) -->
-    <form class="lockscreen-credentials form-inline" action="/admin/forgot" method="post">
-      <div class="form-group">
-        <input type="email" class="form-control" placeholder="Digite seu email" name="email">
+      <form class="form-inline " action="/admin/forgot" method="post">
+        <div class="col-md-2"></div>
 
-        
-        <button style="z-index: 30; height: 100%;" type="submit" class="btn btn-success" ><i class="fa fa-arrow-right "></i></button>
-       
-      </div>
-    </form>
-    <!-- /.lockscreen credentials -->
+        <div class="col-md-8 form-interno">
+          <div  class="form-group">
+            <input type="email" class="form-control" placeholder="Digite seu email" name="email">
+          </div>
+            
+          <button type="submit" class="btn btn-success botaoForgot" ><i class="fa fa-arrow-right "></i></button>
+        </div> 
 
-  </div>
+        <div class="col-md-2"></div>
+      </form>
+    </div>
+
+    <br><br>
   <!-- /.lockscreen-item -->
   <div class="help-block text-center">
     Digite seu email cadastrado para iniciar a recuperação de senha

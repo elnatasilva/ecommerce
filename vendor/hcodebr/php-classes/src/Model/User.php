@@ -4,17 +4,25 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
+use \Hcode\Util;
 
 class User extends Model
 {
+	//constante usada para validar
+	//a sessão do usuário
 	const SESSION = "User";
 
+	//constante para encriptar o código
+	//de recuperação de senha do usuário
 	const SENHA = "SenhaTeste782134";
 	
+
+	//login do usuário no sistema
 	public static function login($login, $password)
 	{
 		$sql = new Sql();
 
+		//query para procurar o login fornecido
 		$results = $sql->select(
 				"SELECT * FROM tb_users WHERE deslogin = :LOGIN", 
 				array(
@@ -22,26 +30,29 @@ class User extends Model
 					)
 		);
 
-		if (count($results) === 0)
-		{
-			throw new \Exception("Usuário inexistente ou senha inválida");
-			
-		}
+		//valida login existente
+		Util::checkEmptyArray($results, "Usuário inexistente ou senha inválida");
 
+		//array com os dados recuperados 
+		//em caso de retorno válido da 
+		//busca pelo login fornecido
 		$data = $results[0];
 
-		//metodo antigo
-		// if (password_verify($password, $data["despassword"]) === true)
-		// if (crypt($password, User::SENHA) === $data["despassword"])
-
+		//checa se o hash da senha fornecida bate com o que está
+		//registrado no banco de dados
 		if (password_verify($password, $data["despassword"]) === true)
 		{
+			//caso a senha seja válida, instancia um objeto User
 			$user = new User();
 
+			//configura as variáveis com os dados retornados
 			$user->setData($data);
 
+			//configura a variável de sessão com os dados
+			//do usuário
 			$_SESSION[User::SESSION] = $user->getValues();
 
+			//retorna o objeto User
 			return $user;
 
 
@@ -167,60 +178,59 @@ class User extends Model
 
 			));
 
-		if (count($results) === 0)
-		{
-			throw new \Exception("Não foi possível recuperar a senha");
-			
-		}else
-		{
-			$data = $results[0];
-			
-			//gera o codigo de recuperacao
-			$results2 = $sql->select("call sp_userspasswordsrecoveries_create(:iduser, :ip)", array(
+		
+		//checa se houve retorno de resultados da consulta, em caso negativo
+		//lança uma Exception
+		Util::checkEmptyArray($results, "Não foi possível recuperar a senha");
 
-					":iduser"=>$data["iduser"],
-					":ip"=>$_SERVER["REMOTE_ADDR"]
+		
+		$data = $results[0];
+		
+		//gera o codigo de recuperacao
+		$results2 = $sql->select("call sp_userspasswordsrecoveries_create(:iduser, :ip)", array(
 
-				));
+				":iduser"=>$data["iduser"],
+				":ip"=>$_SERVER["REMOTE_ADDR"]
 
-			if (count($results2) === 0)
-			{
-				throw new \Exception("Não foi possível recuperar a senha");
-				
-			}else
-			{
+			));
 
-				$datarecovery = $results2[0];
+		//checa se houve retorno de resultados da consulta, em caso negativo
+		//lança uma Exception
+		Util::checkEmptyArray($results2, "Não foi possível recuperar a senha");
 
-				//criptografa o codigo de recuperacao e transforma em string base64
-				$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SENHA, $datarecovery["idrecovery"], MCRYPT_MODE_ECB));
+		
+		$datarecovery = $results2[0];
 
+		//criptografa o codigo de recuperacao e transforma em string base64
+		$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SENHA, $datarecovery["idrecovery"], MCRYPT_MODE_ECB));
 
-				$link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
+		//hiperlink para que o usuário acesse a página de alteração de senha
+		$link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
 
-				//configura a classe de envio de email
-				$mailer = new Mailer($data["desemail"], 
-									 $data["desperson"],
-									 "Recuperação de Senha Hcode Store",
-									 "forgot",
-									 array(
-								 		"name"=>$data["desperson"],
-								 		"link"=>$link
-									 	));
+		//configura a classe de envio de email
+		$mailer = new Mailer($data["desemail"], 
+							 $data["desperson"],
+							 "Recuperação de Senha Hcode Store",
+							 "forgot",
+							 array(
+						 		"name"=>$data["desperson"],
+						 		"link"=>$link
+							 	));
 
-				$mailer->send();
+		//envia o email
+		$mailer->send();
 
-				return $data;
-			}
-		}
+		return $data;
 
 	}
 
+	//checa se o código de recuperação de senha é válido
 	public static function verifyRecoveryCode($code)
 	{
 
 		$sql = new Sql();
 		
+		//descriptografa o código recebido
 		$idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_128,
 									 User::SENHA, 
 									 base64_decode($code), 
@@ -239,11 +249,10 @@ class User extends Model
 					":idrecovery"=>$idrecovery
 				));
 
-		if (count($dataRec) === 0)
-		{
-			throw new \Exception("Não foi possível recuperar a senha");
-			
-		}
+		
+		//checa se houve retorno de resultados da consulta, em caso negativo
+		//lança uma Exception
+		Util::checkEmptyArray($dataRec, "Não foi possível recuperar a senha");
 
 		return $dataRec[0];
 
@@ -267,15 +276,19 @@ class User extends Model
 
 	} 
 
-
+	//altera a senha do usuário
 	public function resetPassword($password)
 	{
+		//indicador de sucesso da transação
 		$status = false;		
 
+		//invalida o código de recuperação para
+		//que não seja mais usado
 		$this->setUsedRecoveryCode();
 
 		$sql = new Sql();
 
+		//cria o hash da senha
 		$hash = password_hash($password, PASSWORD_DEFAULT, array("cost"=>12));
 
 		$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser" , array(
@@ -283,6 +296,9 @@ class User extends Model
 				":iduser"=>$this->getiduser()
 			));
 		
+		//se der tudo certo até aqui o status
+		//é alterado para indicar sucesso na
+		//operação
 		$status = true;
 
 		return $status;

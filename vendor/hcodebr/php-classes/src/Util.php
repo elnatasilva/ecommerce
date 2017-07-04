@@ -7,6 +7,8 @@ namespace Hcode;
 class Util
 {
 	
+	//função para exibir uma página de
+	//erro padrão
 	public static function errorPage($e)
 	{
 		$pageErr = new PageError(array(
@@ -33,6 +35,19 @@ class Util
 			"errorMessage"=>$errMessage,
 			"errorNumber"=>$errCode			
 			));
+	}
+
+	//checa se um array é vazio e lança uma Exception
+	//caso seja vazio
+	public static function checkEmptyArray($array, $message)
+	{
+
+		if (count($array) === 0)
+		{
+			throw new \Exception($message);
+			
+		}
+
 	}
 
 }

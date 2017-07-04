@@ -80,6 +80,8 @@ $app->post('/admin/login', function() {
 
 });
 
+
+//rota do logout
 $app->get('/admin/logout', function() {
 
     User::logout();
@@ -90,6 +92,8 @@ $app->get('/admin/logout', function() {
 
 });
 
+
+//lista todos os usuários
 $app->get('/admin/users', function(){
 
 	User::verifyLogin();
@@ -106,6 +110,9 @@ $app->get('/admin/users', function(){
 	
 });
 
+
+//rota para exibição do formulário de cadastramento
+//de usuário
 $app->get('/admin/users/create', function(){
 
 	User::verifyLogin();
@@ -118,6 +125,9 @@ $app->get('/admin/users/create', function(){
 	
 });
 
+
+//rota para gravação dos dados do usuário
+//que se deseja cadastrar
 $app->post('/admin/users/create', function(){
 
 	try
@@ -148,6 +158,9 @@ $app->post('/admin/users/create', function(){
 	
 });
 
+
+//rota para excluir um usuário cujo id é fornecido 
+//como parâmetro na url
 $app->get('/admin/users/:iduser/delete', function($iduser){
 
 	try
@@ -174,6 +187,9 @@ $app->get('/admin/users/:iduser/delete', function($iduser){
 
 });
 
+
+//exibe os dados do usuário cujo id é passado
+//como parâmetro na rota
 $app->get('/admin/users/:iduser', function($iduser){
 
 	User::verifyLogin();	
@@ -193,7 +209,7 @@ $app->get('/admin/users/:iduser', function($iduser){
 
 });
 
-
+//rota para atualizar dados de um usuário
 $app->post('/admin/users/:iduser', function($iduser){
 
 	try
@@ -223,7 +239,10 @@ $app->post('/admin/users/:iduser', function($iduser){
 
 });
 
-
+//exibe a página de "esqueci a senha"
+//para que o usuário informe seu email
+//para o qual será enviado o código de
+//recuperação
 $app->get("/admin/forgot", function(){
 
 	$page = new PageAdmin(array(
@@ -239,7 +258,8 @@ $app->get("/admin/forgot", function(){
 
 });
 
-
+//envia um email com o código de recuperação
+//de senha
 $app->post("/admin/forgot", function(){
 
 	try
@@ -249,6 +269,7 @@ $app->post("/admin/forgot", function(){
 		$data = User::generateRecoveryCode($email);
 		
 		header("Location: /admin/forgot/sent");
+
 	}catch(Exception $e)
 	{
 		Util::errorPage($e);
@@ -262,6 +283,9 @@ $app->post("/admin/forgot", function(){
 
 });
 
+
+//exibe página de confirmação de envio
+//de email
 $app->get("/admin/forgot/sent", function(){
 
 	$page = new PageAdmin(array(
@@ -278,31 +302,46 @@ $app->get("/admin/forgot/sent", function(){
 });
 
 
+//define uma nova senha para o usuário.
+//Esta página só é acessada por meio de
+//um link com código de recuperação válido
 $app->post("/admin/forgot/reset", function(){
 
-	$dataRec = User::verifyRecoveryCode($_POST["code"]);
+	try
+	{
+		$dataRec = User::verifyRecoveryCode($_POST["code"]);
 
-	$user = new User();
+		$user = new User();
 
-	$user->setData($dataRec);
+		$user->setData($dataRec);
 
-	if (!$user->resetPassword($_POST["password"]))
-		throw new \Exception("Não foi possível redefinir a senha");
-		 
-	$page = new PageAdmin(array(
-			"header"=>false,
-			"footer"=>false
+		if (!$user->resetPassword($_POST["password"]))
+			throw new \Exception("Não foi possível redefinir a senha");
+			 
+		$page = new PageAdmin(array(
+				"header"=>false,
+				"footer"=>false
 
-		));
+			));
 
-	$page->setTpl("forgot-reset-success");
+		$page->setTpl("forgot-reset-success");
 
-	exit;
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
+
+	}finally
+	{
+
+		exit;
+
+	}
 	
 });
 
 
-
+//Esta página só é acessada por meio de
+//um link com código de recuperação válido
 $app->get("/admin/forgot/reset", function(){
 
 	$dataRec = User::verifyRecoveryCode($_GET["code"]);
@@ -322,9 +361,6 @@ $app->get("/admin/forgot/reset", function(){
 	exit;
 
 });
-
-
-
 
 
 $app->run();

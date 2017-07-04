@@ -111,11 +111,9 @@ class Mailer{
 
 		if (!$this->mail->Send()) {
 
-			throw new \Exception($this->mail->ErrorInfo);
+			throw new \Exception("Não foi possível enviar o email.");
 					   
-		} else {
-		    // echo "<br>Mensagem enviada!";
-		}
+		} 
 
 	}
 

@@ -22,6 +22,9 @@ class Sql {
 
 	}
 
+	//funcao invocada em todos os comandos para passar um
+	//array de parametros que serão substituidos na string
+	//do comando
 	private function setParams($statement, $parameters = array())
 	{
 
@@ -33,6 +36,7 @@ class Sql {
 
 	}
 
+	//substitui um parametro pelo valor fornecido
 	private function bindParam($statement, $key, $value)
 	{
 
@@ -40,6 +44,7 @@ class Sql {
 
 	}
 
+	//executa um comando SEM retorno de dados
 	public function query($rawQuery, $params = array())
 	{
 		// echo "Entrou no query com o comando " . $rawQuery;
@@ -51,6 +56,7 @@ class Sql {
 
 	}
 
+	//executa um comando COM retorno de dados
 	public function select($rawQuery, $params = array())
 	{
 

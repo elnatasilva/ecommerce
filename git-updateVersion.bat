@@ -1,0 +1,1 @@
+git-add.bat & git-commit.bat & git-push.bat & pause

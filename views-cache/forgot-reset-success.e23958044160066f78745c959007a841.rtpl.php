@@ -20,7 +20,7 @@
 <!-- Automatic element centering -->
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
-    <a href="/res/admin/index2.html"><b>Admin</b>LTE</a>
+    <a href="/res/admin/index2.html"><b>HCode</b>Store</a>
   </div>
   <!-- User name -->
   <div class="container h3">Alteração de Senha</div>
@@ -29,7 +29,7 @@
 
 
     <!-- lockscreen credentials (contains the form) -->
-    <div id="panel" class="panel panel-success">
+    <div  class="callout callout-success h4">
       <div class="panel-body">Senha alterada com sucesso!</div>
     </div>
 

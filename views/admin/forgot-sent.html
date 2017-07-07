@@ -26,16 +26,16 @@
 <!-- Automatic element centering -->
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
-    <a href="/res/admin/index2.html"><b>Admin</b>LTE</a>
+    <a href="/res/admin/index2.html"><b>HCode</b>Store</a>
   </div>
   <!-- User name -->
-  <div class="lockscreen-name">Recuperação de Senha</div>
+  <div class="lockscreen-name h3">Recuperação de Senha</div>
 
   <br>
 
 
     <!-- lockscreen credentials (contains the form) -->
-    <div id="panel" class="panel panel-success">
+    <div  class="callout callout-success h4">
       <div class="panel-body">Email enviado com sucesso. Verifique sua caixa de emails para acessar o código de recuperação que enviamos.</div>
     </div>
 

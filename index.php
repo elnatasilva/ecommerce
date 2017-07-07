@@ -344,21 +344,31 @@ $app->post("/admin/forgot/reset", function(){
 //um link com código de recuperação válido
 $app->get("/admin/forgot/reset", function(){
 
-	$dataRec = User::verifyRecoveryCode($_GET["code"]);
+	try
+	{
+		$dataRec = User::verifyRecoveryCode($_GET["code"]);
 
-	$page = new PageAdmin(array(
-			"header"=>false,
-			"footer"=>false
+		$page = new PageAdmin(array(
+				"header"=>false,
+				"footer"=>false
 
-		));
+			));
 
-	$page->setTpl("forgot-reset", array(
-			"name"=>$dataRec["desperson"],
-			"code"=>$_GET["code"]
-		));
+		$page->setTpl("forgot-reset", array(
+				"name"=>$dataRec["desperson"],
+				"code"=>$_GET["code"]
+			));
 
+	}catch(Exception $e)
+	{
+		Util::errorPage($e);
 
-	exit;
+	}finally
+	{
+
+		exit;
+
+	}
 
 });
 

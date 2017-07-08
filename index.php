@@ -96,17 +96,28 @@ $app->get('/admin/logout', function() {
 //lista todos os usuários
 $app->get('/admin/users', function(){
 
-	User::verifyLogin();
+	try{
 
-	$users = User::listAll();
+		User::verifyLogin();
 
-	$page = new PageAdmin();
+		$users = User::listAll();
 
-	$page->setTpl("users", array(
-		"users"=>$users
-		));
+		$page = new PageAdmin();
 
-	exit;
+		$page->setTpl("users", array(
+			"users"=>$users
+			));
+
+	}catch(Exception $e)
+	{
+		Util::errorPage($e, "/admin", "Voltar para home");
+
+	}finally
+	{
+
+		exit;
+
+	}
 	
 });
 
@@ -115,13 +126,24 @@ $app->get('/admin/users', function(){
 //de usuário
 $app->get('/admin/users/create', function(){
 
-	User::verifyLogin();
+	try{
 
-	$page = new PageAdmin();
+		User::verifyLogin();
 
-	$page->setTpl("users-create");
+		$page = new PageAdmin();
 
-	exit;
+		$page->setTpl("users-create");
+
+	}catch(Exception $e)
+	{
+		Util::errorPage($e, "/admin", "Voltar para home");
+
+	}finally
+	{
+
+		exit;
+
+	}
 	
 });
 
@@ -147,7 +169,7 @@ $app->post('/admin/users/create', function(){
 
 	}catch(Exception $e)
 	{
-		Util::errorPage($e);
+		Util::errorPage($e, "/admin", "Voltar para home");
 
 	}finally
 	{
@@ -174,9 +196,10 @@ $app->get('/admin/users/:iduser/delete', function($iduser){
 		$user->delete();
 
 		header("Location: /admin/users");
+
 	}catch(Exception $e)
 	{
-		Util::errorPage($e);
+		Util::errorPage($e, "/admin", "Voltar para home");
 
 	}finally
 	{
@@ -192,19 +215,30 @@ $app->get('/admin/users/:iduser/delete', function($iduser){
 //como parâmetro na rota
 $app->get('/admin/users/:iduser', function($iduser){
 
-	User::verifyLogin();	
+	try{
 
-	$user = new User();
+		User::verifyLogin();	
 
-	$user->get($iduser);
+		$user = new User();
 
-	$page = new PageAdmin();
+		$user->get($iduser);
 
-	$page->setTpl("users-update", array(
-		"user"=>$user->getValues()
-		));
+		$page = new PageAdmin();
 
-	exit;	
+		$page->setTpl("users-update", array(
+			"user"=>$user->getValues()
+			));
+
+	}catch(Exception $e)
+	{
+		Util::errorPage($e, "/admin", "Voltar para home");
+
+	}finally
+	{
+
+		exit;
+
+	}	
 
 
 });
@@ -227,7 +261,7 @@ $app->post('/admin/users/:iduser', function($iduser){
 		header("Location: /admin/users");
 	}catch(Exception $e)
 	{
-		Util::errorPage($e);
+		Util::errorPage($e, "/admin", "Voltar para home");
 
 	}finally
 	{

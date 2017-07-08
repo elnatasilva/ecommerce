@@ -18,6 +18,8 @@
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="/res/admin/dist/css/skins/_all-skins.min.css">
 
+  <link rel="stylesheet" href="/res/site/css/admin.css">
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -36,22 +38,27 @@
       <h1>
         Erro
       </h1>
+    </section>
       
 
     <!-- Main content -->
     <section class="content">
 
-      <div class="error-page">
+      <div class="error-page ">
+
         <h2 class="headline text-red"><?php echo htmlspecialchars( $errorNumber, ENT_COMPAT, 'UTF-8', FALSE ); ?></h2>
 
-        <div class="error-content">
-          <h3><i class="fa fa-warning text-red"></i>  <?php echo htmlspecialchars( $errorMessage, ENT_COMPAT, 'UTF-8', FALSE ); ?> </h3>
 
-          <br>
-          <a href="/admin/login">Voltar para login</a>
+        <div class="error-content ">
+        	<br>
+          	<h3><i class="fa fa-warning text-red"></i>  <?php echo htmlspecialchars( $errorMessage, ENT_COMPAT, 'UTF-8', FALSE ); ?> </h3>
 
-          
+          	<a href="<?php echo htmlspecialchars( $rota, ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $textoLink, ENT_COMPAT, 'UTF-8', FALSE ); ?></a> 
+          	<!-- <a href="/admin/login">Voltar para login</a>  -->
         </div>
+
+        <!-- <div class="col-md-6"></div> -->
+
       </div>
       <!-- /.error-page -->
 

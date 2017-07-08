@@ -8,7 +8,7 @@ class Mailer{
 
 	const USERNAME = "user";
 	const PASSWORD = "senha";
-	const FROM = "alias";
+	const FROM = "HCode Store";
 	private $mail;
 
 	public function __construct($toAddress, $toName, $subject, $tplName, $data = array())

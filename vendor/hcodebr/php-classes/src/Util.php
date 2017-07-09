@@ -8,7 +8,7 @@ class Util
 {
 	
 	//função para exibir uma página de
-	//erro padrão
+	//erro padrão, com uma configuração para um link de saida e um texto amigavel para o link
 	public static function errorPage($e, $rota="/admin/login", $textoLink="Voltar para login")
 	// public static function errorPage($e)
 	{
@@ -22,10 +22,10 @@ class Util
 		
 		$errMessage = $e->getMessage();
 
-		$errMessage = $e->getTraceAsString() . "\nhash: " . password_hash(
-														"admin",
-														PASSWORD_DEFAULT,
-														array("cost"=>12));
+		// $errMessage = $e->getTraceAsString() . "\nhash: " . password_hash(
+		// 												"admin",
+		// 												PASSWORD_DEFAULT,
+		// 												array("cost"=>12));
 
 		switch($e->getCode())
 		{
